@@ -3,6 +3,7 @@ from venv import create
 from django.db import models
 from django.forms import PasswordInput
 
+
 class Profile(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -12,7 +13,6 @@ class Profile(models.Model):
     birthdate = models.DateField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-
 
 
 
