@@ -48,9 +48,10 @@ class ProfileList(View):
     def post(self, request):
         #print(request.body)
         jd = json.loads(request.body)
-        Profile.objects.create(last_name=jd['last_name'], 
-                             first_name = jd['first_name'], 
+        Profile.objects.create(first_name=jd['first_name'], 
+                             last_name = jd['last_name'], 
                                   email = jd['email'])
+
         #print(jd)
         datos = {"message":"Success"}
         return JsonResponse(datos)
@@ -65,14 +66,27 @@ class ProfileList(View):
 
     def put(self, request, id):
         jd = json.loads(request.body)
-
+        profile=list(Profile.objects.filter(id=id).values())
+        if len(profile) > 0:
+            profile = Profile.objects.get(id=id)
+            profile.first_name = jd['first_name'] 
+            profile.last_name = jd['last_name'] 
+            profile.email = jd['email'] 
+            profile.save()  
+            datos = {'message':"Update User"}       
+        else:
+            datos = {'message':"User not found"}
+        return JsonResponse(datos)
 
 
     def delete(self, request, id):
-        pass
-
-
-
+        profile=list(Profile.objects.filter(id=id).values())
+        if len(profile) > 0:
+            Profile.objects.filter(id=id).delete()
+            datos = {'message':"User Deleted"} 
+        else:
+            datos = {'message':"User not found"}
+        return JsonResponse(datos)
 
 
 
