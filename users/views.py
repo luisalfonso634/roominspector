@@ -72,6 +72,8 @@ class ProfileList(View):
             profile.first_name = jd['first_name'] 
             profile.last_name = jd['last_name'] 
             profile.email = jd['email'] 
+            profile.password = jd['password'] 
+            profile.bio = jd['bio'] 
             profile.save()  
             datos = {'message':"Update User"}       
         else:
