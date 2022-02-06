@@ -9,9 +9,7 @@ from rest_framework.authtoken import views
 
 urlpatterns = [
 
-    path(r'admin/', admin.site.urls, name='admin'),
-    path(r'api/v1/', include('users.urls'), name='api'),
+    path('admin/', admin.site.urls, name='admin'),
+    path('users/', include('users.urls'), name='users'),
 ]   
-urlpatterns += [
-    path(r'api/v1/auth', include('rest_framework.urls', namespace='rest_framework' ))
-]
+
