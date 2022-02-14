@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib import admin
 from rest_framework.authtoken import views
 
-
+app_name = 'users'
 urlpatterns = [
 
     path('admin/', admin.site.urls, name='admin'),
