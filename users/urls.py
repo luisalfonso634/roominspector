@@ -17,9 +17,7 @@ urlpatterns = [
      path('auth/signup/',
          SignupView.as_view(), name='auth_signup'),
 
-     path('auth/reset/',
-         include('django_rest_passwordreset.urls',
-                 namespace='password_reset')),
+    
     ]
 
 
