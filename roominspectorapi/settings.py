@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+# Custom user model
+AUTH_USER_MODEL = "users.CustomUser"
 
 # Application definition
 
@@ -39,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'rest_framework',
+    'django_rest_passwordreset',
+    
     
 ]
 
@@ -53,6 +57,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'roominspectorapi.urls'
+
+
 
 TEMPLATES = [
     {

@@ -1,13 +1,26 @@
 
-from unicodedata import name
-from django.urls import path
-from users.views import ProfileList
+from django.urls import path, include
+from .views import LoginView, LogoutView, SignupView
 
-app_name = 'users'
 urlpatterns = [
-    path('api/', ProfileList.as_view(), name='profile_list'),
-    path('api/<int:id>', ProfileList.as_view(), name='user_name'),
-]
+    # Auth views
+     path('auth/login/',
+         LoginView.as_view(), name='auth_login'),
+
+     path('auth/logout/',
+         LogoutView.as_view(), name='auth_logout'),
+
+     path('auth/reset/',
+         include('django_rest_passwordreset.urls',
+                 namespace='password_reset')),
+
+     path('auth/signup/',
+         SignupView.as_view(), name='auth_signup'),
+
+     path('auth/reset/',
+         include('django_rest_passwordreset.urls',
+                 namespace='password_reset')),
+    ]
 
 
 
