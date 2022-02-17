@@ -1,100 +1,38 @@
 """Users views."""
 
-#API
-import profile
-from django.http import JsonResponse
-#from rest_framework import generics
-#from users.serializers import ProfileSerializer
-#from django.shortcuts import get_object_or_404
-from users.models import Profile
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-import json
+from django.contrib.auth import authenticate, login, logout
+from rest_framework import status, generics
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import UserSerializer
 
 
-#API
-class ProfileList(View):
-    #con esta instruccion estoy listando todos los usuarios a traves del ORM
-    #El Serializer lo quite para probar otro metodo
-    #serializer_class = ProfileSerializer
-    #el dispatch lo estoy haciendo para decirle que no haga la verificacion csrf
-    #dispatch es un metodo que se ejecuta cada vez que hacemos una peticion
-
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-
-    def get(self, request, id=0):
-        if (id>0):
-            queryset=list(Profile.objects.filter(id=id).values())
-            if len(queryset)>0:
-                profile = queryset[0]
-                datos = {'message':"Success", 'users':profile}
-            else:
-                datos = {'message':"User not found"}
-            return JsonResponse(datos)
-        else:
-            queryset = list(Profile.objects.values())
-            if len(queryset) > 0:
-                datos = {'message':"Success", 'users':queryset}
-            else:
-                datos = {'message':"Users not found"}
-            return JsonResponse(datos)
-
-
+class LoginView(APIView):
     def post(self, request):
-        #print(request.body)
-        jd = json.loads(request.body)
-        Profile.objects.create(first_name=jd['first_name'], 
-                             last_name = jd['last_name'], 
-                                  email = jd['email'])
+        # Recuperamos las credenciales y autenticamos al usuario
+        email = request.data.get('email', None)
+        password = request.data.get('password', None)
+        user = authenticate(email=email, password=password)
 
-        #print(jd)
-        datos = {"message":"Success"}
-        return JsonResponse(datos)
+        # Si es correcto añadimos a la request la información de sesión
+        if user:
+            login(request, user)
+            return Response(
+                UserSerializer(user).data,
+                status=status.HTTP_200_OK)
 
-        
-        #request, esta establecido como parametro en cada una de las funciones
-        #body, es el cuerpo de la peticion
-    
-        
-
-
-
-    def put(self, request, id):
-        jd = json.loads(request.body)
-        profile=list(Profile.objects.filter(id=id).values())
-        if len(profile) > 0:
-            profile = Profile.objects.get(id=id)
-            profile.first_name = jd['first_name'] 
-            profile.last_name = jd['last_name'] 
-            profile.email = jd['email'] 
-            profile.password = jd['password'] 
-            profile.bio = jd['bio'] 
-            profile.save()  
-            datos = {'message':"Update User"}       
-        else:
-            datos = {'message':"User not found"}
-        return JsonResponse(datos)
+        # Si no es correcto devolvemos un error en la petición
+        return Response(
+            status=status.HTTP_404_NOT_FOUND)
 
 
-    def delete(self, request, id):
-        profile=list(Profile.objects.filter(id=id).values())
-        if len(profile) > 0:
-            Profile.objects.filter(id=id).delete()
-            datos = {'message':"User Deleted"} 
-        else:
-            datos = {'message':"User not found"}
-        return JsonResponse(datos)
+class LogoutView(APIView):
+    def post(self, request):
+        # Borramos de la request la información de sesión
+        logout(request)
 
+        # Devolvemos la respuesta al cliente
+        return Response(status=status.HTTP_200_OK)
 
-
-
-
-
-        
-    
-
+class SignupView(generics.CreateAPIView):
+    serializer_class = UserSerializer

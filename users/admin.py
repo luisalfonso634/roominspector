@@ -1,14 +1,10 @@
-#User Admin Classes
-#Django
-from re import search
 from django.contrib import admin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group  # new
 
-#Models #API
-from users.models import Profile
+admin.site.unregister(Group)  # new
 
-
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('pk','first_name', 'last_name', 'email')
-
-
+@admin.register(get_user_model())
+class CustomUserAdmin(UserAdmin):
+    pass
