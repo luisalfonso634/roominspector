@@ -9,7 +9,9 @@ class CustomUser(AbstractUser):
     email = models.EmailField(
         max_length=150, unique=True)
       
-    
+#class Meta:
+#        model = CustomUser
+#        fields = ('username', 'email', 'password')
 
 
 USERNAME_FIELD = 'email'  # new
