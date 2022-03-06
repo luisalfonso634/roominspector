@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from users.models import USERNAME_FIELD
 from .serializers import UserSerializer
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.models import User
@@ -16,7 +18,7 @@ class LoginView(APIView):
     permission_classes = ()
 
     def post(request):
-        user = authenticate(email=='email', password='password')
+        user = authenticate(USERNAME_FIELD=='email', password='password')
         print(user)
         if user:
             serializer = UserSerializer(user)
