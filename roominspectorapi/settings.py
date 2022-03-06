@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_rest_passwordreset',
     
     
@@ -87,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'roominspector',
         'USER': 'root',
-        'PASSWORD':'11025462',
+        'PASSWORD':'',
         'HOST':'localhost',
         'PORT':3306,
     }
@@ -117,12 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-'DEFAULT_PERMISSION_CLASSES': [
-    'rest_framework.permissions.IsAuthenticated',
-]
+    
 }
 
 

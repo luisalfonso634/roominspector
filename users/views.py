@@ -1,20 +1,36 @@
 """Users views."""
 
 
+import email
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import UserSerializer
 from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib.auth.models import User
 
+class LoginView(APIView):
+    authentication_classes = ()
+    permission_classes = ()
+
+    def post(request):
+        user = authenticate(email=='email', password='password')
+        print(user)
+        if user:
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
     def post(self, request, format=None):
         data = request.data 
         #if request.method == 'POST':
         email = data.get('email', None)
+        print(email)
         password = data.get('password',None)
+        print(password)
 #AQUI ESTA EL PROBLEMA:
         user = authenticate(email=email, password=password) 
         print(user) 
@@ -32,8 +48,8 @@ class LoginView(APIView):
                 status=status.HTTP_404_NOT_FOUND)
         else:
                 print("punto9")
-                return Response(
-                status=status.HTTP_404_NOT_FOUND)
+#                return Response(
+#                status=status.HTTP_404_NOT_FOUND)
 
 
 
