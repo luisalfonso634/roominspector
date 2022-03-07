@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import base64
+import email
+from logging import basicConfig
 from pathlib import Path
+
+import django
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,8 +35,6 @@ ALLOWED_HOSTS = ["*"]
 # Custom user model
 AUTH_USER_MODEL = "users.CustomUser"
 
-# Application definition
-
 
 
 INSTALLED_APPS = [
@@ -44,9 +47,10 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'django_rest_passwordreset',
-    
-    
+      
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -114,12 +118,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = ['path.to.CustomEmailBackend']
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 REST_FRAMEWORK = {
-    
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
 
 

@@ -1,12 +1,14 @@
 """Users views."""
 
 
+from contextvars import Token
 import email
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+import users
 
 from users.models import USERNAME_FIELD
 from .serializers import UserSerializer
@@ -19,54 +21,53 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-class LoginView(APIView):
-    def post(self, request):
-        # Recuperamos las credenciales y autenticamos al usuario
-        email = request.data.get('email', None)
-        password = request.data.get('password', None)
-        user = authenticate(email='email', password='password')
-        print(user)
-        # Si es correcto añadimos a la request la información de sesión
-        if user:
-            login(request, user)
-            return Response(
-                status=status.HTTP_200_OK)
+from django.contrib.auth.models import User
+#7mar22
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend
+
+class CustomEmailBackend(ModelBackend):
+    def authenticate(self, request, email=None, password=None, **kwargs):
+        UserModel = get_user_model()
+        try:
+            user = UserModel.objects.get(email=email)
+        except UserModel.DoesNotExist:
+            return None
         else:
-        # Si no es correcto devolvemos un error en la petición
-            return Response(
-                status=status.HTTP_404_NOT_FOUND)
-    
-    def __str__(self):
-            """Return project title and first_name and last_name."""
-            return f'{self.user.email} {self.user.password}'
+            if user.check_password(password):
+                return user
+        return None
 
 class LoginView(APIView):
-    def post(self, request, format=None):
-        data = request.data 
-        #if request.method == 'POST':
-        email = data.get('email', None)
-        print(email)
-        password = data.get('password',None)
-        print(password)
-#AQUI ESTA EL PROBLEMA:
-        user = authenticate(email=email, password=password) 
-        print(user) 
-        print("punto5")
-        if user is not None: 
-            if user.is_active:
-                print("hola Miguel")
-                login(request, user)
-                print("punto6")
-                return Response(status=status.HTTP_200_OK)
-                print("punto7")
-            else:
-                print("punto8")
-                return Response(
-                status=status.HTTP_404_NOT_FOUND)
-        else:
-                print("punto9")
-#                return Response(
-#                status=status.HTTP_404_NOT_FOUND)
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [AllowAny] 
+    
+    def post(self, request):
+        content = {
+                    'user': str(request.user),  # `django.contrib.auth.User` instance.
+                    'auth': str(request.auth),  # None
+                }
+        return Response(content)        
+        if request.method == 'POST':
+            email = request.data.get('email', None)
+            print(email)
+            password = request.data.get('password',None)
+            print(password)
+            #AQUI ESTA EL PROBLEMA:
+            user = authenticate(request, USERNAME_FIELD= "username", password= "pasword")
+            print(user)
+        if  user : 
+            login(request, user)
+            print("punto1")
+            return Response(status=status.HTTP_200_OK)
+    
+        return Response(
+            status=status.HTTP_404_NOT_FOUND)
 
 
 
