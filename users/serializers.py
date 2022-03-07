@@ -4,11 +4,13 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
+from users.models import CustomUser
+from django.db import models
 
 
 
 class Meta:
-        model = AbstractUser
+        model = CustomUser
         fields = ('id', 'email', 'first_name', 'last_name','password','username')
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
         required=True)
     password = serializers.CharField(
         min_length=8)
+   
 
     class Meta:
         model = get_user_model()

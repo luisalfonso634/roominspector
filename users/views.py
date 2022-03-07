@@ -12,18 +12,33 @@ from users.models import USERNAME_FIELD
 from .serializers import UserSerializer
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+
+from django.contrib.auth import authenticate, login, logout
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 class LoginView(APIView):
-    authentication_classes = ()
-    permission_classes = ()
-
-    def post(request):
-        user = authenticate(USERNAME_FIELD=='email', password='password')
+    def post(self, request):
+        # Recuperamos las credenciales y autenticamos al usuario
+        email = request.data.get('email', None)
+        password = request.data.get('password', None)
+        user = authenticate(email='email', password='password')
         print(user)
+        # Si es correcto añadimos a la request la información de sesión
         if user:
-            serializer = UserSerializer(user)
-            return Response(serializer.data)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            login(request, user)
+            return Response(
+                status=status.HTTP_200_OK)
+        else:
+        # Si no es correcto devolvemos un error en la petición
+            return Response(
+                status=status.HTTP_404_NOT_FOUND)
+    
+    def __str__(self):
+            """Return project title and first_name and last_name."""
+            return f'{self.user.email} {self.user.password}'
 
 class LoginView(APIView):
     def post(self, request, format=None):

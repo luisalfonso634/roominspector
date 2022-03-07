@@ -32,6 +32,8 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 # Application definition
 
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'rest_framework',
-    'rest_framework.authtoken',
     'django_rest_passwordreset',
     
     
