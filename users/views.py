@@ -3,16 +3,15 @@
 
 from contextvars import Token
 import email
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-import users
 
 from users.models import USERNAME_FIELD
 from .serializers import UserSerializer
-from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
@@ -29,10 +28,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.backends import ModelBackend, BaseBackend
+
 
 class CustomEmailBackend(ModelBackend):
-    def authenticate(self, request, email=None, password=None, **kwargs):
+    def authenticate(self, request, username=None, password=None, **kwargs):
         UserModel = get_user_model()
         try:
             user = UserModel.objects.get(email=email)
@@ -52,22 +52,23 @@ class LoginView(APIView):
                     'user': str(request.user),  # `django.contrib.auth.User` instance.
                     'auth': str(request.auth),  # None
                 }
-        return Response(content)        
-        if request.method == 'POST':
-            email = request.data.get('email', None)
-            print(email)
-            password = request.data.get('password',None)
-            print(password)
-            #AQUI ESTA EL PROBLEMA:
-            user = authenticate(request, USERNAME_FIELD= "username", password= "pasword")
-            print(user)
-        if  user : 
-            login(request, user)
-            print("punto1")
-            return Response(status=status.HTTP_200_OK)
+        return Response(content)    
+
+        #if request.method == 'POST':
+        #    email = request.data.get('email', None)
+        #    print(email)
+        #    password = request.data.get('password',None)
+        #    print(password)
+        #    #AQUI ESTA EL PROBLEMA:
+        #    user = authenticate(request, username= "username", password= "password")
+        #    print(user)
+        #if  user : 
+        #    login(request, user)
+        #    print("punto1")
+        #    return Response(status=status.HTTP_200_OK)
     
-        return Response(
-            status=status.HTTP_404_NOT_FOUND)
+        #return Response(
+        #    status=status.HTTP_404_NOT_FOUND)
 
 
 

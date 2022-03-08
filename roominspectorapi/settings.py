@@ -10,9 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-import base64
-import email
-from logging import basicConfig
 from pathlib import Path
 
 import django
@@ -47,6 +44,7 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'django_rest_passwordreset',
+    'rest_framework.authtoken',
       
 ]
 
@@ -118,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = ['path.to.CustomEmailBackend']
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/

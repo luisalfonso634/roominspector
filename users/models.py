@@ -13,7 +13,6 @@ from django.utils import timezone
 from roominspectorapi.settings import AUTH_USER_MODEL
 
 class CustomUser(AbstractUser):
-#class User(AbstractUser):
         
         email = models.EmailField(
         max_length=150, unique=True)
