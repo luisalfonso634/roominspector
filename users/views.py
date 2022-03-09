@@ -31,13 +31,29 @@ from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend, BaseBackend
 
+<<<<<<< HEAD
 
 
+=======
+
+class CustomEmailBackend(ModelBackend):
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        UserModel = get_user_model()
+        try:
+            user = UserModel.objects.get(email=email)
+        except UserModel.DoesNotExist:
+            return None
+        else:
+            if user.check_password(password):
+                return user
+        return None
+>>>>>>> 497858990e606d4b301915f75c6f2106a9def982
 
 class LoginView(APIView):
     #authentication_classes = [SessionAuthentication, BasicAuthentication]
     #permission_classes = [AllowAny] 
     
+<<<<<<< HEAD
     def post(self, requests):
         # content = {
         #            'user': str(requests.user),  # `django.contrib.auth.User` instance.
@@ -61,9 +77,30 @@ class LoginView(APIView):
             login(requests, user)
             print("punto1")
             return Response(status=status.HTTP_200_OK)
+=======
+    def post(self, request):
+        content = {
+                    'user': str(request.user),  # `django.contrib.auth.User` instance.
+                    'auth': str(request.auth),  # None
+                }
+        return Response(content)    
+
+        #if request.method == 'POST':
+        #    email = request.data.get('email', None)
+        #    print(email)
+        #    password = request.data.get('password',None)
+        #    print(password)
+        #    #AQUI ESTA EL PROBLEMA:
+        #    user = authenticate(request, username= "username", password= "password")
+        #    print(user)
+        #if  user : 
+        #    login(request, user)
+        #    print("punto1")
+        #    return Response(status=status.HTTP_200_OK)
+>>>>>>> 497858990e606d4b301915f75c6f2106a9def982
     
-        return Response(
-            status=status.HTTP_404_NOT_FOUND)
+        #return Response(
+        #    status=status.HTTP_404_NOT_FOUND)
 
 
 
