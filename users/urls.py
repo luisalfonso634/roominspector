@@ -1,6 +1,10 @@
 
 from django.urls import path, include
 from .views import LoginView, LogoutView, SignupView
+from rest_framework.authtoken import views
+from rest_framework.authtoken import views
+
+
 
 urlpatterns = [
     # Auth views
@@ -17,6 +21,7 @@ urlpatterns = [
      path('auth/signup/',
          SignupView.as_view(), name='auth_signup'),
 
+     path('api-token-auth/', views.obtain_auth_token)
     
     ]
 
