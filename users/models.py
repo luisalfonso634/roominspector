@@ -15,20 +15,8 @@ from .choices import categories
 
 
 class CustomUser(AbstractUser):
-<<<<<<< HEAD
     email = models.EmailField(max_length=150, unique=True)
     employee_category=models.CharField(max_length=10, choices=categories)
-=======
-        
-        email = models.EmailField(
-        max_length=150, unique=True)
-
-#class CategoryUser(models.Model):    
-#    model = CustomUser
-#    manager = models.ManyToManyField('self')
-#    supervisor = models.ManyToManyField('self')
-#    hk_employee = models.ManyToManyField('self')
->>>>>>> 497858990e606d4b301915f75c6f2106a9def982
 
     
     
